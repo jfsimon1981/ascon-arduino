@@ -20,23 +20,36 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_H_INCLUDED
-#define ASCON_H_INCLUDED
-
-/**
- * \file ASCON.h
- * \brief Symmetric cryptographic primitives built around the ASCON permutation.
- *
- * References: https://ascon.iaik.tugraz.at/
- */
-
-#include "ascon-aead.h"
-#include "ascon-hash.h"
-#include "ascon-hmac.h"
-#include "ascon-kmac.h"
-#include "ascon-permutation.h"
-#include "ascon-siv.h"
-#include "ascon-xof.h"
-#include "ascon-utility.h"
-
+#define __STDC_WANT_LIB_EXT1__ 1 /* Detect if the C library has memset_s */
+#include "../ascon-utility.h"
+#include <stdlib.h>
+#include <string.h>
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
 #endif
+#if defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#include <wincrypt.h>
+#endif
+
+void ascon_clean(void *buf, unsigned size)
+{
+    /* The safest way to do this is using SecureZeroMemory(), memset_s(), or
+     * explicit_bzero() so that the compiler will not optimise away the
+     * call to memset() by accident.  If that doesn't work, then we fall
+     * back to using volatile pointers which usually works to trick the
+     * compiler, but may not. */
+#if defined(_WIN32) || defined(_WIN64)
+    SecureZeroMemory(buf, size);
+#elif defined(__STDC_LIB_EXT1__) || defined(HAVE_MEMSET_S)
+    memset_s(buf, (rsize_t)size, 0, (rsize_t)size);
+#elif defined(HAVE_EXPLICIT_BZERO)
+    explicit_bzero(buf, size);
+#else
+    volatile unsigned char *d = (volatile unsigned char *)buf;
+    while (size > 0) {
+        *d++ = 0;
+        --size;
+    }
+#endif
+}

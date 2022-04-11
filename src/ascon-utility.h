@@ -20,23 +20,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_H_INCLUDED
-#define ASCON_H_INCLUDED
+#ifndef ASCON_UTILITY_H
+#define ASCON_UTILITY_H
 
 /**
- * \file ASCON.h
- * \brief Symmetric cryptographic primitives built around the ASCON permutation.
- *
- * References: https://ascon.iaik.tugraz.at/
+ * \file ascon-utility.h
+ * \brief System utilities of use to applications that use ASCON.
  */
 
-#include "ascon-aead.h"
-#include "ascon-hash.h"
-#include "ascon-hmac.h"
-#include "ascon-kmac.h"
-#include "ascon-permutation.h"
-#include "ascon-siv.h"
-#include "ascon-xof.h"
-#include "ascon-utility.h"
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * \brief Cleans a buffer that contains sensitive material.
+ *
+ * \param buf Points to the buffer to clear.
+ * \param size Size of the buffer to clear in bytes.
+ */
+void ascon_clean(void *buf, unsigned size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
