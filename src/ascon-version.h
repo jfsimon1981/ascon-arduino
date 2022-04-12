@@ -20,24 +20,32 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_H_INCLUDED
-#define ASCON_H_INCLUDED
+#ifndef ASCON_VERSION_H
+#define ASCON_VERSION_H
 
 /**
- * \file ASCON.h
- * \brief Symmetric cryptographic primitives built around the ASCON permutation.
- *
- * References: https://ascon.iaik.tugraz.at/
+ * \file ascon-version.h
+ * \brief Version information for the ASCON Suite API.
  */
 
-#include "ascon-aead.h"
-#include "ascon-hash.h"
-#include "ascon-hmac.h"
-#include "ascon-kmac.h"
-#include "ascon-permutation.h"
-#include "ascon-siv.h"
-#include "ascon-xof.h"
-#include "ascon-utility.h"
-#include "ascon-version.h"
+/**
+ * \brief Major version for the ASCON Suite API.
+ */
+#define ASCON_SUITE_VER_MAJOR 0
+
+/**
+ * \brief Minor version for the ASCON Suite API.
+ */
+#define ASCON_SUITE_VER_MINOR 1
+
+/**
+ * \brief Patch version for the ASCON Suite API.
+ */
+#define ASCON_SUITE_VER_PATCH 0
+
+/**
+ * \brief String form of the version for the ASCON Suite API.
+ */
+#define ASCON_SUITE_VER_STR "0.1.0"
 
 #endif
