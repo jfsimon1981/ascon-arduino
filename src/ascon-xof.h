@@ -37,10 +37,16 @@ extern "C" {
 #endif
 
 /**
- * \brief Size of the hash output for ASCON-HASH/ASCON-HASHA and the
- * default hash output size for ASCON-XOF/ASCON-XOFA.
+ * \brief Size of the hash output for ASCON-HASH and the default hash
+ * output size for ASCON-XOF.
  */
 #define ASCON_HASH_SIZE 32
+
+/**
+ * \brief Size of the hash output for ASCON-HASHA and the default hash
+ * output size for ASCON-XOFA.
+ */
+#define ASCON_HASHA_SIZE ASCON_HASH_SIZE
 
 /**
  * \brief Rate of absorbing and squeezing data for ASCON-XOF,
@@ -49,7 +55,7 @@ extern "C" {
 #define ASCON_XOF_RATE 8
 
 /**
- * \brief State information for ASCON-XOF and ASCON-XOFA incremental modes.
+ * \brief State information for ASCON-XOF incremental mode.
  */
 typedef struct
 {
@@ -58,6 +64,17 @@ typedef struct
     unsigned char mode;     /**< Hash mode: 0 for absorb, 1 for squeeze */
 
 } ascon_xof_state_t;
+
+/**
+ * \brief State information for ASCON-XOFA incremental mode.
+ */
+typedef struct
+{
+    ascon_state_t state;    /**< Current hash state */
+    unsigned char count;    /**< Number of bytes in the current block */
+    unsigned char mode;     /**< Hash mode: 0 for absorb, 1 for squeeze */
+
+} ascon_xofa_state_t;
 
 /**
  * \brief Hashes a block of input data with ASCON-XOF and generates a
@@ -100,6 +117,39 @@ void ascon_xof_init(ascon_xof_state_t *state);
  * \sa ascon_xof_init()
  */
 void ascon_xof_init_fixed(ascon_xof_state_t *state, size_t outlen);
+
+/**
+ * \brief Re-initializes the state for an ASCON-XOF hashing operation.
+ *
+ * \param state XOF state to be re-initialized.
+ *
+ * This function is equivalent to calling ascon_xof_free() and then
+ * ascon_xof_init() to restart the hashing process.
+ *
+ * \sa ascon_xof_init()
+ */
+void ascon_xof_reinit(ascon_xof_state_t *state);
+
+/**
+ * \brief Re-initializes the state for an incremental ASCON-XOF operation,
+ * with a fixed output length.
+ *
+ * \param state XOF state to be re-initialized.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ *
+ * This function is equivalent to calling ascon_xof_free() and then
+ * ascon_xof_init_fixed() to restart the hashing process.
+ *
+ * \sa ascon_xof_init_fixed()
+ */
+void ascon_xof_reinit_fixed(ascon_xof_state_t *state, size_t outlen);
+
+/**
+ * \brief Frees the ASCON-XOF state and destroys any sensitive material.
+ *
+ * \param state XOF state to be freed.
+ */
+void ascon_xof_free(ascon_xof_state_t *state);
 
 /**
  * \brief Aborbs more input data into an ASCON-XOF state.
@@ -162,7 +212,7 @@ int ascon_xofa(unsigned char *out, const unsigned char *in, size_t inlen);
  *
  * \sa ascon_xofa_absorb(), ascon_xofa_squeeze(), ascon_xofa()
  */
-void ascon_xofa_init(ascon_xof_state_t *state);
+void ascon_xofa_init(ascon_xofa_state_t *state);
 
 /**
  * \brief Initializes the state for an incremental ASCON-XOFA operation,
@@ -177,7 +227,40 @@ void ascon_xofa_init(ascon_xof_state_t *state);
  *
  * \sa ascon_xofa_init()
  */
-void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen);
+void ascon_xofa_init_fixed(ascon_xofa_state_t *state, size_t outlen);
+
+/**
+ * \brief Re-initializes the state for an ASCON-XOFA hashing operation.
+ *
+ * \param state XOF state to be re-initialized.
+ *
+ * This function is equivalent to calling ascon_xofa_free() and then
+ * ascon_xofa_init() to restart the hashing process.
+ *
+ * \sa ascon_xof_init()
+ */
+void ascon_xofa_reinit(ascon_xofa_state_t *state);
+
+/**
+ * \brief Re-initializes the state for an incremental ASCON-XOFA operation,
+ * with a fixed output length.
+ *
+ * \param state XOF state to be re-initialized.
+ * \param outlen The desired output length in bytes, or 0 for arbitrary-length.
+ *
+ * This function is equivalent to calling ascon_xofa_free() and then
+ * ascon_xofa_init_fixed() to restart the hashing process.
+ *
+ * \sa ascon_xof_init_fixed()
+ */
+void ascon_xofa_reinit_fixed(ascon_xofa_state_t *state, size_t outlen);
+
+/**
+ * \brief Frees the ASCON-XOFA state and destroys any sensitive material.
+ *
+ * \param state XOF state to be freed.
+ */
+void ascon_xofa_free(ascon_xofa_state_t *state);
 
 /**
  * \brief Aborbs more input data into an ASCON-XOFA state.
@@ -189,7 +272,7 @@ void ascon_xofa_init_fixed(ascon_xof_state_t *state, size_t outlen);
  * \sa ascon_xofa_init(), ascon_xofa_squeeze()
  */
 void ascon_xofa_absorb
-    (ascon_xof_state_t *state, const unsigned char *in, size_t inlen);
+    (ascon_xofa_state_t *state, const unsigned char *in, size_t inlen);
 
 /**
  * \brief Squeezes output data from an ASCON-XOFA state.
@@ -201,7 +284,7 @@ void ascon_xofa_absorb
  * \sa ascon_xofa_init(), ascon_xofa_update()
  */
 void ascon_xofa_squeeze
-    (ascon_xof_state_t *state, unsigned char *out, size_t outlen);
+    (ascon_xofa_state_t *state, unsigned char *out, size_t outlen);
 
 /**
  * \brief Absorbs enough zeroes into an ASCON-XOFA state to pad the
@@ -213,7 +296,7 @@ void ascon_xofa_squeeze
  * This function can avoid unnecessary XOR-with-zero operations
  * to save some time when padding is required.
  */
-void ascon_xofa_pad(ascon_xof_state_t *state);
+void ascon_xofa_pad(ascon_xofa_state_t *state);
 
 #ifdef __cplusplus
 }

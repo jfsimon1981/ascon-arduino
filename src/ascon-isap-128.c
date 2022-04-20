@@ -20,20 +20,18 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "ascon-hmac.h"
+#include "ascon-isap.h"
 #include "ascon-utility.h"
+#include "utility/ascon-util-snp.h"
+#include "utility/ascon-aead-common.h"
 #include <string.h>
 
-/* The actual implementation is in the "ascon-hmac-common.h" file */
-
-/* ASCON-HMAC */
-#define HMAC_ALG_NAME ascon_hmac
-#define HMAC_HASH_SIZE ASCON_HASH_SIZE
-#define HMAC_BLOCK_SIZE 64
-#define HMAC_STATE ascon_hmac_state_t
-#define HMAC_HASH_INIT ascon_hash_init
-#define HMAC_HASH_REINIT ascon_hash_reinit
-#define HMAC_HASH_FREE ascon_hash_free
-#define HMAC_HASH_UPDATE ascon_hash_update
-#define HMAC_HASH_FINALIZE ascon_hash_finalize
-#include "utility/ascon-hmac-common.h"
+/* ISAP-A-128 */
+#define ISAP_ALG_NAME ascon128_isap
+#define ISAP_KEY_STATE ascon128_isap_aead_key_t
+#define ISAP_RATE (64 / 8)
+#define ISAP_sH 12
+#define ISAP_sE 12
+#define ISAP_sB 12
+#define ISAP_sK 12
+#include "utility/ascon-isap-common.h"

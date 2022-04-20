@@ -20,20 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "ascon-hmac.h"
-#include "ascon-utility.h"
-#include <string.h>
+#include "../ascon-version.h"
 
-/* The actual implementation is in the "ascon-hmac-common.h" file */
-
-/* ASCON-HMAC */
-#define HMAC_ALG_NAME ascon_hmac
-#define HMAC_HASH_SIZE ASCON_HASH_SIZE
-#define HMAC_BLOCK_SIZE 64
-#define HMAC_STATE ascon_hmac_state_t
-#define HMAC_HASH_INIT ascon_hash_init
-#define HMAC_HASH_REINIT ascon_hash_reinit
-#define HMAC_HASH_FREE ascon_hash_free
-#define HMAC_HASH_UPDATE ascon_hash_update
-#define HMAC_HASH_FINALIZE ascon_hash_finalize
-#include "utility/ascon-hmac-common.h"
+int ascon_suite_version(void)
+{
+    return ASCON_SUITE_VERSION;
+}

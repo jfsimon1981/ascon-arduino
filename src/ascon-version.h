@@ -28,24 +28,24 @@
  * \brief Version information for the ASCON Suite API.
  */
 
-/**
- * \brief Major version for the ASCON Suite API.
- */
-#define ASCON_SUITE_VER_MAJOR 0
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
- * \brief Minor version for the ASCON Suite API.
+ * \brief Version for the ASCON Suite API that is implemented by the headers.
  */
-#define ASCON_SUITE_VER_MINOR 1
+#define ASCON_SUITE_VERSION 0x000100
 
 /**
- * \brief Patch version for the ASCON Suite API.
+ * \brief Version of the ASCON Suite API that is implemented by the library.
+ *
+ * \return The library version; e.g. 0x010203 for version 1.2.3.
  */
-#define ASCON_SUITE_VER_PATCH 0
+int ascon_suite_version(void);
 
-/**
- * \brief String form of the version for the ASCON Suite API.
- */
-#define ASCON_SUITE_VER_STR "0.1.0"
+#ifdef __cplusplus
+}
+#endif
 
 #endif

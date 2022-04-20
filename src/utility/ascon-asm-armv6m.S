@@ -33,18 +33,23 @@
 	.type	ascon_permute, %function
 ascon_permute:
 	push	{r4, r5, r6, r7, lr}
-	sub	sp, sp, #44
-	str	r0, [sp, #40]
+	mov	r2, r8
+	mov	r3, r9
+	mov	r4, r10
+	mov	r5, fp
+	push	{r2, r3, r4, r5}
+	sub	sp, sp, #8
+	str	r0, [sp, #0]
 	ldr	r3, [r0, #4]
 	ldr	r4, [r0, #12]
 	ldr	r5, [r0, #20]
 	ldr	r6, [r0, #28]
 	ldr	r7, [r0, #36]
-	str	r3, [sp, #4]
-	str	r4, [sp, #12]
-	str	r5, [sp, #20]
-	str	r6, [sp, #28]
-	str	r7, [sp, #36]
+	mov	r8, r3
+	mov	r9, r4
+	mov	r10, r5
+	mov	fp, r6
+	mov	ip, r7
 	ldr	r3, [r0, #0]
 	ldr	r4, [r0, #8]
 	ldr	r5, [r0, #16]
@@ -55,21 +60,22 @@ ascon_permute:
 	lsls	r1, r1, #2
 	adr	r2, .L90
 	ldr	r1, [r2, r1]
+	add	r1, r2
 	mov	pc, r1
 	.align	2
 .L90:
-	.word	.L0
-	.word	.L1
-	.word	.L2
-	.word	.L3
-	.word	.L4
-	.word	.L5
-	.word	.L6
-	.word	.L7
-	.word	.L8
-	.word	.L9
-	.word	.L10
-	.word	.L11
+	.word	.L0-.L90
+	.word	.L1-.L90
+	.word	.L2-.L90
+	.word	.L3-.L90
+	.word	.L4-.L90
+	.word	.L5-.L90
+	.word	.L6-.L90
+	.word	.L7-.L90
+	.word	.L8-.L90
+	.word	.L9-.L90
+	.word	.L10-.L90
+	.word	.L11-.L90
 .L91:
 	bl	.L12
 .L0:
@@ -98,16 +104,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #12
 	eors	r5, r0
 	eors	r3, r7
@@ -133,8 +139,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -146,12 +152,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -162,12 +168,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -179,10 +185,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -194,13 +200,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -211,12 +217,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L1:
 	movs	r0, #9
 	eors	r5, r0
@@ -243,16 +249,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #12
 	eors	r5, r0
 	eors	r3, r7
@@ -278,8 +284,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -291,12 +297,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -307,12 +313,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -324,10 +330,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -339,13 +345,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -356,12 +362,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L2:
 	movs	r0, #12
 	eors	r5, r0
@@ -388,16 +394,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #9
 	eors	r5, r0
 	eors	r3, r7
@@ -423,8 +429,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -436,12 +442,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -452,12 +458,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -469,10 +475,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -484,13 +490,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -501,12 +507,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L3:
 	movs	r0, #9
 	eors	r5, r0
@@ -533,16 +539,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #9
 	eors	r5, r0
 	eors	r3, r7
@@ -568,8 +574,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -581,12 +587,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -597,12 +603,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -614,10 +620,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -629,13 +635,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -646,12 +652,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L4:
 	movs	r0, #6
 	eors	r5, r0
@@ -678,16 +684,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #12
 	eors	r5, r0
 	eors	r3, r7
@@ -713,8 +719,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -726,12 +732,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -742,12 +748,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -759,10 +765,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -774,13 +780,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -791,12 +797,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L5:
 	movs	r0, #3
 	eors	r5, r0
@@ -823,16 +829,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #12
 	eors	r5, r0
 	eors	r3, r7
@@ -858,8 +864,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -871,12 +877,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -887,12 +893,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -904,10 +910,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -919,13 +925,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -936,12 +942,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L6:
 	movs	r0, #6
 	eors	r5, r0
@@ -968,16 +974,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #9
 	eors	r5, r0
 	eors	r3, r7
@@ -1003,8 +1009,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -1016,12 +1022,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -1032,12 +1038,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -1049,10 +1055,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -1064,13 +1070,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -1081,12 +1087,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L7:
 	movs	r0, #3
 	eors	r5, r0
@@ -1113,16 +1119,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #9
 	eors	r5, r0
 	eors	r3, r7
@@ -1148,8 +1154,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -1161,12 +1167,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -1177,12 +1183,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -1194,10 +1200,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -1209,13 +1215,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -1226,12 +1232,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L8:
 	movs	r0, #12
 	eors	r5, r0
@@ -1258,16 +1264,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #6
 	eors	r5, r0
 	eors	r3, r7
@@ -1293,8 +1299,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -1306,12 +1312,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -1322,12 +1328,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -1339,10 +1345,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -1354,13 +1360,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -1371,12 +1377,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L9:
 	movs	r0, #9
 	eors	r5, r0
@@ -1403,16 +1409,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #6
 	eors	r5, r0
 	eors	r3, r7
@@ -1438,8 +1444,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -1451,12 +1457,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -1467,12 +1473,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -1484,10 +1490,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -1499,13 +1505,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -1516,12 +1522,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L10:
 	movs	r0, #12
 	eors	r5, r0
@@ -1548,16 +1554,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #3
 	eors	r5, r0
 	eors	r3, r7
@@ -1583,8 +1589,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -1596,12 +1602,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -1612,12 +1618,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -1629,10 +1635,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -1644,13 +1650,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -1661,12 +1667,12 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L11:
 	movs	r0, #9
 	eors	r5, r0
@@ -1693,16 +1699,16 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	str	r3, [sp, #0]
-	str	r4, [sp, #8]
-	str	r5, [sp, #16]
-	str	r6, [sp, #24]
-	str	r7, [sp, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	lr, r7
+	mov	r7, ip
+	mov	ip, r6
+	mov	r6, fp
+	mov	fp, r5
+	mov	r5, r10
+	mov	r10, r4
+	mov	r4, r9
+	mov	r9, r3
+	mov	r3, r8
 	movs	r0, #3
 	eors	r5, r0
 	eors	r3, r7
@@ -1728,8 +1734,8 @@ ascon_permute:
 	eors	r3, r7
 	eors	r6, r5
 	mvns	r5, r5
-	mov	ip, r7
-	ldr	r2, [sp, #0]
+	str	r7, [sp, #4]
+	mov	r2, r9
 	movs	r7, #4
 	movs	r0, r3
 	rors	r0, r0, r7
@@ -1741,12 +1747,12 @@ ascon_permute:
 	movs	r7, #10
 	rors	r0, r0, r7
 	eors	r0, r3
-	str	r0, [sp, #4]
+	mov	r8, r0
 	movs	r7, #9
 	movs	r3, r1
 	rors	r3, r3, r7
 	eors	r3, r2
-	ldr	r2, [sp, #8]
+	mov	r2, r10
 	movs	r7, #11
 	movs	r0, r2
 	rors	r0, r0, r7
@@ -1757,12 +1763,12 @@ ascon_permute:
 	movs	r7, #20
 	rors	r0, r0, r7
 	eors	r0, r4
-	str	r0, [sp, #12]
+	mov	r9, r0
 	movs	r7, #19
 	movs	r4, r1
 	rors	r4, r4, r7
 	eors	r4, r2
-	ldr	r2, [sp, #16]
+	mov	r2, fp
 	movs	r7, #2
 	movs	r0, r5
 	rors	r0, r0, r7
@@ -1774,10 +1780,10 @@ ascon_permute:
 	movs	r7, #1
 	rors	r0, r0, r7
 	eors	r0, r5
-	str	r0, [sp, #20]
+	mov	r10, r0
 	movs	r5, r1
 	eors	r5, r2
-	ldr	r2, [sp, #24]
+	mov	r2, ip
 	movs	r7, #3
 	movs	r0, r6
 	rors	r0, r0, r7
@@ -1789,13 +1795,13 @@ ascon_permute:
 	movs	r7, #5
 	rors	r1, r1, r7
 	eors	r1, r6
-	str	r1, [sp, #28]
+	mov	fp, r1
 	movs	r6, r0
 	rors	r6, r6, r7
 	eors	r6, r2
-	mov	r7, ip
-	mov	ip, r3
-	ldr	r2, [sp, #32]
+	ldr	r7, [sp, #4]
+	str	r3, [sp, #4]
+	mov	r2, lr
 	movs	r3, #17
 	movs	r0, r2
 	rors	r0, r0, r3
@@ -1806,187 +1812,41 @@ ascon_permute:
 	movs	r3, #4
 	rors	r0, r0, r3
 	eors	r0, r7
-	str	r0, [sp, #36]
+	mov	ip, r0
 	movs	r3, #3
 	movs	r7, r1
 	rors	r7, r7, r3
 	eors	r7, r2
-	mov	r3, ip
+	ldr	r3, [sp, #4]
 .L12:
-	ldr	r0, [sp, #40]
+	movs	r1, #0
+	ldr	r0, [sp, #0]
+	str	r1, [sp, #4]
 	str	r3, [r0, #0]
 	str	r4, [r0, #8]
 	str	r5, [r0, #16]
 	str	r6, [r0, #24]
 	str	r7, [r0, #32]
-	ldr	r3, [sp, #4]
-	ldr	r4, [sp, #12]
-	ldr	r5, [sp, #20]
-	ldr	r6, [sp, #28]
-	ldr	r7, [sp, #36]
+	mov	r3, r8
+	mov	r4, r9
+	mov	r5, r10
+	mov	r6, fp
+	mov	r7, ip
 	str	r3, [r0, #4]
 	str	r4, [r0, #12]
 	str	r5, [r0, #20]
 	str	r6, [r0, #28]
 	str	r7, [r0, #36]
-	add	sp, sp, #44
+	movs	r2, #0
+	movs	r3, #0
+	mov	ip, r2
+	add	sp, sp, #8
+	pop	{r2, r3, r4, r5}
+	mov	r8, r2
+	mov	r9, r3
+	mov	r10, r4
+	mov	fp, r5
 	pop	{r4, r5, r6, r7, pc}
 	.size	ascon_permute, .-ascon_permute
-
-	.align	2
-	.global	ascon_from_regular
-	.thumb
-	.thumb_func
-	.type	ascon_from_regular, %function
-ascon_from_regular:
-	push	{r4, r5, r6, lr}
-	movs	r6, #5
-.L100:
-	ldr	r1, [r0]
-	ldr	r2, [r0, #4]
-	ldr	r5, =0x22222222
-	lsrs	r3, r1, #1
-	lsrs	r4, r2, #1
-	eors	r3, r1
-	eors	r4, r2
-	ands	r3, r5
-	ands	r4, r5
-	eors	r1, r3
-	eors	r2, r4
-	lsls	r3, r3, #1
-	lsls	r4, r4, #1
-	eors	r1, r3
-	eors	r2, r4
-	ldr	r5, =0x0c0c0c0c
-	lsrs	r3, r1, #2
-	lsrs	r4, r2, #2
-	eors	r3, r1
-	eors	r4, r2
-	ands	r3, r5
-	ands	r4, r5
-	eors	r1, r3
-	eors	r2, r4
-	lsls	r3, r3, #2
-	lsls	r4, r4, #2
-	eors	r1, r3
-	eors	r2, r4
-	ldr	r5, =0x000f000f
-	lsrs	r3, r1, #12
-	lsrs	r4, r2, #12
-	eors	r3, r1
-	eors	r4, r2
-	ands	r3, r5
-	ands	r4, r5
-	eors	r1, r3
-	eors	r2, r4
-	lsls	r3, r3, #12
-	lsls	r4, r4, #12
-	eors	r1, r3
-	eors	r2, r4
-	movs	r5, #255
-	lsrs	r3, r1, #24
-	lsrs	r4, r2, #24
-	eors	r3, r1
-	eors	r4, r2
-	ands	r3, r5
-	ands	r4, r5
-	eors	r1, r3
-	eors	r2, r4
-	lsls	r3, r3, #24
-	lsls	r4, r4, #24
-	eors	r1, r3
-	eors	r2, r4
-	uxth	r3, r2
-	lsls	r5, r1, #16
-	orrs	r3, r5
-	lsrs	r1, r1, #16
-	str	r3, [r0]
-	lsls	r4, r1, #16
-	lsrs	r2, r2, #16
-	orrs	r4, r2
-	str	r4, [r0, #4]
-	adds	r0, r0, #8
-	subs	r6, r6, #1
-	bne	.L100
-	pop	{r4, r5, r6, pc}
-	.size	ascon_from_regular, .-ascon_from_regular
-
-	.align	2
-	.global	ascon_to_regular
-	.thumb
-	.thumb_func
-	.type	ascon_to_regular, %function
-ascon_to_regular:
-	push	{r4, r5, r6, lr}
-	movs	r6, #5
-.L101:
-	ldr	r1, [r0]
-	ldr	r2, [r0, #4]
-	lsrs	r3, r2, #16
-	lsls	r3, r3, #16
-	uxth	r4, r1
-	lsrs	r1, r1, #16
-	orrs	r1, r3
-	lsls	r2, r2, #16
-	orrs	r2, r4
-	ldr	r5, =0x0000aaaa
-	lsrs	r3, r1, #15
-	lsrs	r4, r2, #15
-	eors	r3, r1
-	eors	r4, r2
-	ands	r3, r5
-	ands	r4, r5
-	eors	r1, r3
-	eors	r2, r4
-	lsls	r3, r3, #15
-	lsls	r4, r4, #15
-	eors	r1, r3
-	eors	r2, r4
-	ldr	r5, =0x0000cccc
-	lsrs	r3, r1, #14
-	lsrs	r4, r2, #14
-	eors	r3, r1
-	eors	r4, r2
-	ands	r3, r5
-	ands	r4, r5
-	eors	r1, r3
-	eors	r2, r4
-	lsls	r3, r3, #14
-	lsls	r4, r4, #14
-	eors	r1, r3
-	eors	r2, r4
-	ldr	r5, =0x0000f0f0
-	lsrs	r3, r1, #12
-	lsrs	r4, r2, #12
-	eors	r3, r1
-	eors	r4, r2
-	ands	r3, r5
-	ands	r4, r5
-	eors	r1, r3
-	eors	r2, r4
-	lsls	r3, r3, #12
-	lsls	r4, r4, #12
-	eors	r1, r3
-	eors	r2, r4
-	movs	r5, #255
-	lsrs	r3, r1, #24
-	lsrs	r4, r2, #24
-	eors	r3, r1
-	eors	r4, r2
-	ands	r3, r5
-	ands	r4, r5
-	eors	r1, r3
-	eors	r2, r4
-	lsls	r3, r3, #24
-	lsls	r4, r4, #24
-	eors	r1, r3
-	eors	r2, r4
-	str	r1, [r0]
-	str	r2, [r0, #4]
-	adds	r0, r0, #8
-	subs	r6, r6, #1
-	bne	.L101
-	pop	{r4, r5, r6, pc}
-	.size	ascon_to_regular, .-ascon_to_regular
 
 #endif

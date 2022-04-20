@@ -27,9 +27,9 @@
 /**
  * \brief Intializes a ASCON-KMACA context with the prefix pre-computed.
  *
- * \param state Points to the KMAC state to initialize.
+ * \param state Points to the internal ASCON-XOFA state to initialize.
  */
-static void ascon_kmaca_init_precomputed(ascon_kmac_state_t *state)
+static void ascon_kmaca_init_precomputed(ascon_xofa_state_t *state)
 {
     static unsigned char const kmac_iv[40] = {
         0xcd, 0xec, 0xd0, 0x06, 0x9c, 0xdd, 0x34, 0x6d,
@@ -38,21 +38,23 @@ static void ascon_kmaca_init_precomputed(ascon_kmac_state_t *state)
         0x3a, 0xbf, 0xa5, 0x65, 0x20, 0xf6, 0x27, 0xf9,
         0x3b, 0xdc, 0xaa, 0x5c, 0x4b, 0x50, 0x7b, 0x82
     };
-    memcpy(state->state.B, kmac_iv, sizeof(kmac_iv));
+    ascon_init(&(state->state));
+    ascon_overwrite_bytes(&(state->state), kmac_iv, 0, sizeof(kmac_iv));
+    ascon_release(&(state->state));
     state->count = 0;
     state->mode = 0;
-    ascon_from_regular(&(state->state));
 }
 
 /* The actual implementation is in the "ascon-kmac-common.h" file */
 
 /* ASCON-XOFA */
 #define KMAC_ALG_NAME ascon_kmaca
-#define KMAC_SIZE ASCON_KMAC_SIZE
-#define KMAC_STATE ascon_kmac_state_t
+#define KMAC_SIZE ASCON_KMACA_SIZE
+#define KMAC_STATE ascon_kmaca_state_t
 #define KMAC_RATE ASCON_XOF_RATE
 #define KMAC_XOF_INIT ascon_xofa_init
 #define KMAC_XOF_PREINIT ascon_kmaca_init_precomputed
+#define KMAC_XOF_FREE ascon_xofa_free
 #define KMAC_XOF_ABSORB ascon_xofa_absorb
 #define KMAC_XOF_SQUEEZE ascon_xofa_squeeze
 #define KMAC_XOF_PAD ascon_xofa_pad

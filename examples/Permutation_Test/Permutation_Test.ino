@@ -50,6 +50,7 @@ static unsigned char const ascon_output_8[40] = {
 };
 
 ascon_state_t state;
+unsigned char buffer[40];
 
 void setup()
 {
@@ -57,22 +58,24 @@ void setup()
     Serial.println();
 
     Serial.print("ASCON 12 Rounds ... ");
-    memcpy(state.B, ascon_input, sizeof(ascon_input));
-    ascon_from_regular(&state);
+    ascon_init(&state);
+    ascon_overwrite_bytes(&state, ascon_input, 0, sizeof(ascon_input));
     ascon_permute(&state, 0);
-    ascon_to_regular(&state);
-    if (memcmp(state.B, ascon_output_12, sizeof(ascon_output_12)) != 0) {
+    ascon_extract_bytes(&state, buffer, 0, sizeof(buffer));
+    ascon_free(&state);
+    if (memcmp(buffer, ascon_output_12, sizeof(ascon_output_12)) != 0) {
         Serial.println("failed");
     } else {
         Serial.println("ok");
     }
 
     Serial.print("ASCON 8 Rounds ... ");
-    memcpy(state.B, ascon_input, sizeof(ascon_input));
-    ascon_from_regular(&state);
+    ascon_init(&state);
+    ascon_overwrite_bytes(&state, ascon_input, 0, sizeof(ascon_input));
     ascon_permute(&state, 4);
-    ascon_to_regular(&state);
-    if (memcmp(state.B, ascon_output_8, sizeof(ascon_output_8)) != 0) {
+    ascon_extract_bytes(&state, buffer, 0, sizeof(buffer));
+    ascon_free(&state);
+    if (memcmp(buffer, ascon_output_8, sizeof(ascon_output_8)) != 0) {
         Serial.println("failed");
     } else {
         Serial.println("ok");

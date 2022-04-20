@@ -74,6 +74,9 @@
 /* Assembly backend for Xtensa-based systems */
 #define ASCON_BACKEND_XTENSA 1
 #define ASCON_BACKEND_SLICED32 1
+#if !defined(__XTENSA_WINDOWED_ABI__)
+#define ASCON_BACKEND_FREE 1
+#endif
 
 #elif defined(__x86_64) || defined(__x86_64__) || \
       defined(__aarch64__) || defined(__ARM_ARCH_ISA_A64) || \

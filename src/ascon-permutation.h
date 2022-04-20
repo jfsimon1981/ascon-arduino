@@ -50,18 +50,21 @@ extern "C" {
  * stored in an "operational" form which is more efficient for the
  * back end to process.
  *
- * The functions ascon_to_regular() and ascon_from_regular() can be
- * used to convert to and from the regular form when necessary.
- *
  * This structure should be treated as opaque by calling applications
  * when it is in operational form.  It is declared publicly only to ensure
  * correct alignment for efficient 64-bit word access by the back end.
+ *
+ * If the back end requires more than 40 bytes for the permutation state,
+ * then ascon_init() will allocate a structure and place a pointer to
+ * that structure into P.  The application should call ascon_free() to
+ * properly free the permutation state when it is no longer required.
  */
 typedef union
 {
-    uint64_t S[5];      /**< 64-bit words of the state */
-    uint32_t W[10];     /**< 32-bit words of the state */
-    uint8_t B[40];      /**< Bytes of the state */
+    uint64_t S[5];                  /**< 64-bit words of the state */
+    uint32_t W[10];                 /**< 32-bit words of the state */
+    uint8_t B[40];                  /**< Bytes of the state */
+    void *P[40 / sizeof(void *)];   /**< Private backend state */
 
 } ascon_state_t;
 
@@ -69,28 +72,37 @@ typedef union
  * \brief Initializes the words of the ASCON permutation state to zero.
  *
  * \param state The ASCON state to initialize.
+ *
+ * This function might allocate internal state to hold more information
+ * than will fit in the ascon_state_t structure to interface with a
+ * platform-specific acceleration module.
+ *
+ * It is always a good idea to call this before using the permutation state.
+ * Also make sure to call ascon_free() when the permutation state is no
+ * longer required to deallocate the internal state.
+ *
+ * \sa ascon_free()
  */
 void ascon_init(ascon_state_t *state);
 
 /**
- * \brief Converts the ASCON state from the internal "operational" form
- * into the regular big-endian form.
+ * \brief Frees an ASCON permutation state and attempts to destroy
+ * any sensitive material.
  *
- * \param state The ASCON state to convert.
+ * \param state The ASCON state to be freed.
  *
- * \sa ascon_from_regular()
+ * If ascon_init() had to allocate internal structures to interface with a
+ * platform-specific acceleration module, then this function will deallocate
+ * those structures.
+ *
+ * There is no guarantee that all traces of the sensitive material will
+ * be gone.  Fragments may be left on the stack or in registers from
+ * previous permutation calls.  This function will make a best effort
+ * given the constraints of the platform.
+ *
+ * \sa ascon_init()
  */
-void ascon_to_regular(ascon_state_t *state);
-
-/**
- * \brief Converts the ASCON state from the regular big-endian form
- * into the internal "operational" form.
- *
- * \param state The ASCON state to convert.
- *
- * \sa ascon_to_regular()
- */
-void ascon_from_regular(ascon_state_t *state);
+void ascon_free(ascon_state_t *state);
 
 /**
  * \brief Adds bytes to the ASCON state by XOR'ing them with existing bytes.
@@ -199,6 +211,46 @@ void ascon_permute(ascon_state_t *state, uint8_t first_round);
  * \param state The ASCON state in "operational" form.
  */
 #define ascon_permute6(state) ascon_permute((state), 6)
+
+/**
+ * \brief Temporarily releases access to any shared hardware resources
+ * that a permutation state was using.
+ *
+ * \param state The ASCON state to be released.
+ *
+ * Operation on the state will resume the next time ascon_acquire()
+ * is called.
+ *
+ * The ascon_free() function implicitly releases the state so it usually
+ * isn't necessary to release the state explicitly.  However, if the
+ * application will not be using the state for some time then it should
+ * call ascon_release() to allow other tasks on the system to access
+ * the shared hardware.
+ *
+ * \sa ascon_acquire()
+ */
+void ascon_release(ascon_state_t *state);
+
+/**
+ * \brief Re-acquires access to any shared hardware resources that a
+ * permutation state was using.
+ *
+ * \param state The ASCON state to be re-acquired.
+ *
+ * \sa ascon_release()
+ */
+void ascon_acquire(ascon_state_t *state);
+
+/**
+ * \brief Copies the entire ASCON permutation state from a source to a
+ * destination.
+ *
+ * \param dest The destination to copy to.
+ * \param src The source to copy from.
+ *
+ * The destination must be acquired and the source must be released.
+ */
+void ascon_copy(ascon_state_t *dest, const ascon_state_t *src);
 
 #ifdef __cplusplus
 }
