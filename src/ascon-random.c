@@ -20,28 +20,19 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_H_INCLUDED
-#define ASCON_H_INCLUDED
-
-/**
- * \file ASCON.h
- * \brief Symmetric cryptographic primitives built around the ASCON permutation.
- *
- * References: https://ascon.iaik.tugraz.at/
- */
-
-#include "ascon-aead.h"
-#include "ascon-hash.h"
-#include "ascon-hkdf.h"
-#include "ascon-hmac.h"
-#include "ascon-isap.h"
-#include "ascon-kmac.h"
-#include "ascon-pbkdf2.h"
-#include "ascon-permutation.h"
 #include "ascon-random.h"
-#include "ascon-siv.h"
 #include "ascon-utility.h"
-#include "ascon-version.h"
-#include "ascon-xof.h"
+#include "utility/ascon-trng.h"
 
-#endif
+int ascon_random(unsigned char *out, size_t outlen)
+{
+    ascon_xof_state_t xof;
+    unsigned char seed[ASCON_SYSTEM_SEED_SIZE];
+    int ok = ascon_trng_generate(seed, sizeof(seed));
+    ascon_xof_init(&xof);
+    ascon_xof_absorb(&xof, seed, sizeof(seed));
+    ascon_xof_squeeze(&xof, out, outlen);
+    ascon_xof_free(&xof);
+    ascon_clean(seed, sizeof(seed));
+    return ok ? 1 : 0;
+}

@@ -20,28 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_H_INCLUDED
-#define ASCON_H_INCLUDED
+#ifndef ASCON_SELECT_TRNG_H
+#define ASCON_SELECT_TRNG_H
 
-/**
- * \file ASCON.h
- * \brief Symmetric cryptographic primitives built around the ASCON permutation.
- *
- * References: https://ascon.iaik.tugraz.at/
- */
+#if defined(__arm__) && defined(__SAM3X8E__) && defined(ARDUINO)
 
-#include "ascon-aead.h"
-#include "ascon-hash.h"
-#include "ascon-hkdf.h"
-#include "ascon-hmac.h"
-#include "ascon-isap.h"
-#include "ascon-kmac.h"
-#include "ascon-pbkdf2.h"
-#include "ascon-permutation.h"
-#include "ascon-random.h"
-#include "ascon-siv.h"
-#include "ascon-utility.h"
-#include "ascon-version.h"
-#include "ascon-xof.h"
+/* TRNG on the Arduino Due */
+#define ASCON_TRNG_DUE 1
+
+#elif defined(ESP8266) || defined(ESP32)
+
+/* TRNG on ESP8266 and ESP32 modules */
+#define ASCON_TRNG_ESP 1
+
+#else
+
+/* No idea how to generate random numbers on this device yet */
+#warning "No system random number source found"
+#define ASCON_TRNG_NONE 1
+#define ASCON_TRNG_MIXER 1
+
+#endif
 
 #endif

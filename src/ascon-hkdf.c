@@ -20,28 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_H_INCLUDED
-#define ASCON_H_INCLUDED
-
-/**
- * \file ASCON.h
- * \brief Symmetric cryptographic primitives built around the ASCON permutation.
- *
- * References: https://ascon.iaik.tugraz.at/
- */
-
-#include "ascon-aead.h"
-#include "ascon-hash.h"
 #include "ascon-hkdf.h"
 #include "ascon-hmac.h"
-#include "ascon-isap.h"
-#include "ascon-kmac.h"
-#include "ascon-pbkdf2.h"
-#include "ascon-permutation.h"
-#include "ascon-random.h"
-#include "ascon-siv.h"
 #include "ascon-utility.h"
-#include "ascon-version.h"
-#include "ascon-xof.h"
+#include "utility/ascon-util.h"
+#include <string.h>
 
-#endif
+/* The actual implementation is in the "ascon-hkdf-common.h" file */
+
+/* ASCON-HKDF */
+#define HKDF_ALG_NAME ascon_hkdf
+#define HKDF_STATE ascon_hkdf_state_t
+#define HKDF_HMAC_SIZE ASCON_HMAC_SIZE
+#define HKDF_HMAC_STATE ascon_hmac_state_t
+#define HKDF_HMAC_INIT ascon_hmac_init
+#define HKDF_HMAC_UPDATE ascon_hmac_update
+#define HKDF_HMAC_FINALIZE ascon_hmac_finalize
+#include "utility/ascon-hkdf-common.h"
