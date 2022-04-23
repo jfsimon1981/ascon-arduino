@@ -30,7 +30,7 @@
 static uint8_t const ASCON128a_IV[8] =
     {0x80, 0x80, 0x0c, 0x08, 0x00, 0x00, 0x00, 0x00};
 
-int ascon128a_aead_encrypt
+void ascon128a_aead_encrypt
     (unsigned char *c, size_t *clen,
      const unsigned char *m, size_t mlen,
      const unsigned char *ad, size_t adlen,
@@ -38,6 +38,7 @@ int ascon128a_aead_encrypt
      const unsigned char *k)
 {
     ascon_state_t state;
+    unsigned char partial;
 
     /* Set the length of the returned ciphertext */
     *clen = mlen + ASCON128_TAG_SIZE;
@@ -58,7 +59,8 @@ int ascon128a_aead_encrypt
     ascon_separator(&state);
 
     /* Encrypt the plaintext to create the ciphertext */
-    ascon_aead_encrypt_16(&state, c, m, mlen, 4);
+    partial = ascon_aead_encrypt_16(&state, c, m, mlen, 4, 0);
+    ascon_pad(&state, partial);
 
     /* Finalize and compute the authentication tag */
     ascon_absorb_16(&state, k, 16);
@@ -66,7 +68,6 @@ int ascon128a_aead_encrypt
     ascon_absorb_16(&state, k, 24);
     ascon_squeeze_partial(&state, c + mlen, 24, ASCON128_TAG_SIZE);
     ascon_free(&state);
-    return 0;
 }
 
 int ascon128a_aead_decrypt
@@ -78,6 +79,7 @@ int ascon128a_aead_decrypt
 {
     ascon_state_t state;
     unsigned char tag[ASCON128_TAG_SIZE];
+    unsigned char partial;
     int result;
 
     /* Set the length of the returned plaintext */
@@ -101,7 +103,8 @@ int ascon128a_aead_decrypt
     ascon_separator(&state);
 
     /* Decrypt the ciphertext to create the plaintext */
-    ascon_aead_decrypt_16(&state, m, c, *mlen, 4);
+    partial = ascon_aead_decrypt_16(&state, m, c, *mlen, 4, 0);
+    ascon_pad(&state, partial);
 
     /* Finalize and check the authentication tag */
     ascon_absorb_16(&state, k, 16);
