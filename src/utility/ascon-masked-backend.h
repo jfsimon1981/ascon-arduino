@@ -20,29 +20,34 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef ASCON_H_INCLUDED
-#define ASCON_H_INCLUDED
+#ifndef ASCON_MASKED_BACKEND_H
+#define ASCON_MASKED_BACKEND_H
 
-/**
- * \file ASCON.h
- * \brief Symmetric cryptographic primitives built around the ASCON permutation.
- *
- * References: https://ascon.iaik.tugraz.at/
- */
+#include "utility/ascon-select-backend.h"
 
-#include "ascon-aead.h"
-#include "ascon-aead-masked.h"
-#include "ascon-hash.h"
-#include "ascon-hkdf.h"
-#include "ascon-hmac.h"
-#include "ascon-isap.h"
-#include "ascon-kmac.h"
-#include "ascon-pbkdf2.h"
-#include "ascon-permutation.h"
-#include "ascon-random.h"
-#include "ascon-siv.h"
-#include "ascon-utility.h"
-#include "ascon-version.h"
-#include "ascon-xof.h"
+/* Select the default back end to use for the masked ASCON permutation,
+ * and any properties we can use to optimize use of the permutation. */
+
+#if defined(ASCON_BACKEND_SLICED32)
+
+/* Use the 32-bit sliced backend for masking if we were using the
+ * 32-bit sliced backend for the regular permutation as then it is
+ * easier to convert between masked and unmasked representations. */
+#define ASCON_MASKED_X2_BACKEND_C32 1
+#define ASCON_MASKED_X3_BACKEND_C32 1
+#define ASCON_MASKED_X4_BACKEND_C32 1
+#define ASCON_MASKED_WORD_BACKEND_C32 1
+#define ASCON_MASKED_BACKEND_SLICED32 1
+
+#else
+
+/* Fall back to the 64-bit version of the masked backend if nothing better */
+#define ASCON_MASKED_X2_BACKEND_C64 1
+#define ASCON_MASKED_X3_BACKEND_C64 1
+#define ASCON_MASKED_X4_BACKEND_C64 1
+#define ASCON_MASKED_WORD_BACKEND_C64 1
+#define ASCON_MASKED_BACKEND_SLICED64 1
+
+#endif
 
 #endif
