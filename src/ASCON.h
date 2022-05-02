@@ -38,6 +38,7 @@
 #include "ascon-isap.h"
 #include "ascon-kmac.h"
 #include "ascon-pbkdf2.h"
+#include "ascon-prf.h"
 #include "ascon-permutation.h"
 #include "ascon-random.h"
 #include "ascon-siv.h"
