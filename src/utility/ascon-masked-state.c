@@ -50,12 +50,7 @@ void ascon_x2_copy_from_x1
     (ascon_masked_state_t *dest, const ascon_state_t *src,
      ascon_trng_state_t *trng)
 {
-#if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
-        (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    int index;
-    for (index = 0; index < 5; ++index)
-        ascon_masked_word_x2_mask(&(dest->M[index]), src->S[index], trng);
-#elif defined(ASCON_BACKEND_DIRECT_XOR)
+#if defined(ASCON_BACKEND_DIRECT_XOR)
     int index;
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x2_load(&(dest->M[index]), src->B + index * 8, trng);
@@ -74,11 +69,7 @@ void ascon_x2_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src)
 {
     int index;
     ascon_init(dest);
-#if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
-        (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    for (index = 0; index < 5; ++index)
-        dest->S[index] = ascon_masked_word_x2_unmask(&(src->M[index]));
-#elif defined(ASCON_BACKEND_DIRECT_XOR)
+#if defined(ASCON_BACKEND_DIRECT_XOR)
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x2_store(dest->B + index * 8, &(src->M[index]));
 #else
@@ -102,6 +93,8 @@ void ascon_x2_copy_from_x2
     }
 }
 
+#if ASCON_MASKED_MAX_SHARES >= 3
+
 void ascon_x2_copy_from_x3
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng)
@@ -111,6 +104,10 @@ void ascon_x2_copy_from_x3
         ascon_masked_word_x2_from_x3(&(dest->M[index]), &(src->M[index]), trng);
 }
 
+#endif /* ASCON_MASKED_MAX_SHARES >= 3 */
+
+#if ASCON_MASKED_MAX_SHARES >= 4
+
 void ascon_x2_copy_from_x4
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng)
@@ -119,6 +116,10 @@ void ascon_x2_copy_from_x4
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x2_from_x4(&(dest->M[index]), &(src->M[index]), trng);
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */
+
+#if ASCON_MASKED_MAX_SHARES >= 3
 
 void ascon_x3_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng)
 {
@@ -133,12 +134,7 @@ void ascon_x3_copy_from_x1
     (ascon_masked_state_t *dest, const ascon_state_t *src,
      ascon_trng_state_t *trng)
 {
-#if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
-        (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    int index;
-    for (index = 0; index < 5; ++index)
-        ascon_masked_word_x3_mask(&(dest->M[index]), src->S[index], trng);
-#elif defined(ASCON_BACKEND_DIRECT_XOR)
+#if defined(ASCON_BACKEND_DIRECT_XOR)
     int index;
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x3_load(&(dest->M[index]), src->B + index * 8, trng);
@@ -157,11 +153,7 @@ void ascon_x3_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src)
 {
     int index;
     ascon_init(dest);
-#if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
-        (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    for (index = 0; index < 5; ++index)
-        dest->S[index] = ascon_masked_word_x3_unmask(&(src->M[index]));
-#elif defined(ASCON_BACKEND_DIRECT_XOR)
+#if defined(ASCON_BACKEND_DIRECT_XOR)
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x3_store(dest->B + index * 8, &(src->M[index]));
 #else
@@ -194,6 +186,8 @@ void ascon_x3_copy_from_x3
     }
 }
 
+#if ASCON_MASKED_MAX_SHARES >= 4
+
 void ascon_x3_copy_from_x4
     (ascon_masked_state_t *dest, const ascon_masked_state_t *src,
      ascon_trng_state_t *trng)
@@ -202,6 +196,12 @@ void ascon_x3_copy_from_x4
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x3_from_x4(&(dest->M[index]), &(src->M[index]), trng);
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 3 */
+
+#if ASCON_MASKED_MAX_SHARES >= 4
 
 void ascon_x4_randomize(ascon_masked_state_t *state, ascon_trng_state_t *trng)
 {
@@ -216,12 +216,7 @@ void ascon_x4_copy_from_x1
     (ascon_masked_state_t *dest, const ascon_state_t *src,
      ascon_trng_state_t *trng)
 {
-#if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
-        (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    int index;
-    for (index = 0; index < 5; ++index)
-        ascon_masked_word_x4_mask(&(dest->M[index]), src->S[index], trng);
-#elif defined(ASCON_BACKEND_DIRECT_XOR)
+#if defined(ASCON_BACKEND_DIRECT_XOR)
     int index;
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x4_load(&(dest->M[index]), src->B + index * 8, trng);
@@ -240,11 +235,7 @@ void ascon_x4_copy_to_x1(ascon_state_t *dest, const ascon_masked_state_t *src)
 {
     int index;
     ascon_init(dest);
-#if (defined(ASCON_BACKEND_SLICED64) && defined(ASCON_MASKED_BACKEND_SLICED64)) || \
-        (defined(ASCON_BACKEND_SLICED32) && defined(ASCON_MASKED_BACKEND_SLICED32))
-    for (index = 0; index < 5; ++index)
-        dest->S[index] = ascon_masked_word_x4_unmask(&(src->M[index]));
-#elif defined(ASCON_BACKEND_DIRECT_XOR)
+#if defined(ASCON_BACKEND_DIRECT_XOR)
     for (index = 0; index < 5; ++index)
         ascon_masked_word_x4_store(dest->B + index * 8, &(src->M[index]));
 #else
@@ -285,3 +276,5 @@ void ascon_x4_copy_from_x4
             (&(dest->M[index]), &(src->M[index]), trng);
     }
 }
+
+#endif /* ASCON_MASKED_MAX_SHARES >= 4 */

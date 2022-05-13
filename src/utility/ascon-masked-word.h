@@ -59,6 +59,26 @@ extern "C" {
 #endif
 
 /**
+ * \brief Masked 64-bit word with up to ASCON_MASKED_MAX_SHARES shares.
+ *
+ * This structure should be treated as opaque.
+ */
+typedef union
+{
+    /** 64-bit version of the masked shares */
+    uint64_t S[ASCON_MASKED_MAX_SHARES];
+
+    /** 32-bit version of the masked shares */
+    uint32_t W[ASCON_MASKED_MAX_SHARES * 2];
+
+    /** 8-bit version of the masked shares */
+    uint8_t B[ASCON_MASKED_MAX_SHARES * 8];
+
+} ascon_masked_word_t;
+
+#if !defined(ASCON_MASKED_WORD_BACKEND_DIRECT_XOR)
+
+/**
  * \brief Rotates 64-bit masked share 1 with respect to share 0.
  *
  * \param x Value of share 1 in the same bit positions as share 0.
@@ -274,6 +294,36 @@ extern "C" {
  */
 #define ascon_mask32_unrotate_share3_2(x) (rightRotate27((x)))
 
+#else /* ASCON_MASKED_WORD_BACKEND_DIRECT_XOR */
+
+/* Direct XOR masking method does not rotate the shares */
+#define ascon_mask64_rotate_share1_0(x)   (x)
+#define ascon_mask64_rotate_share2_0(x)   (x)
+#define ascon_mask64_rotate_share2_1(x)   (x)
+#define ascon_mask64_rotate_share3_0(x)   (x)
+#define ascon_mask64_rotate_share3_1(x)   (x)
+#define ascon_mask64_rotate_share3_2(x)   (x)
+#define ascon_mask64_unrotate_share1_0(x) (x)
+#define ascon_mask64_unrotate_share2_0(x) (x)
+#define ascon_mask64_unrotate_share2_1(x) (x)
+#define ascon_mask64_unrotate_share3_0(x) (x)
+#define ascon_mask64_unrotate_share3_1(x) (x)
+#define ascon_mask64_unrotate_share3_2(x) (x)
+#define ascon_mask32_rotate_share1_0(x)   (x)
+#define ascon_mask32_rotate_share2_0(x)   (x)
+#define ascon_mask32_rotate_share2_1(x)   (x)
+#define ascon_mask32_rotate_share3_0(x)   (x)
+#define ascon_mask32_rotate_share3_1(x)   (x)
+#define ascon_mask32_rotate_share3_2(x)   (x)
+#define ascon_mask32_unrotate_share1_0(x) (x)
+#define ascon_mask32_unrotate_share2_0(x) (x)
+#define ascon_mask32_unrotate_share2_1(x) (x)
+#define ascon_mask32_unrotate_share3_0(x) (x)
+#define ascon_mask32_unrotate_share3_1(x) (x)
+#define ascon_mask32_unrotate_share3_2(x) (x)
+
+#endif /* ASCON_MASKED_WORD_BACKEND_DIRECT_XOR */
+
 /**
  * \brief Sets a x2 masked word to zero.
  *
@@ -349,25 +399,6 @@ void ascon_masked_word_x2_store
  */
 void ascon_masked_word_x2_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
-
-/**
- * \brief Masks a 64-bit word and loads it into a x2 masked word.
- *
- * \param word The x2 masked word to write to.
- * \param data The 64-bit word to be masked.
- * \param trng TRNG to use to generate masking material.
- */
-void ascon_masked_word_x2_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
-
-/**
- * \brief Unmasks the contents of a x2 masked word.
- *
- * \param word The x2 masked word to unmask.
- *
- * \return The unmasked version of the word.
- */
-uint64_t ascon_masked_word_x2_unmask(const ascon_masked_word_t *word);
 
 /**
  * \brief Randomizes a x2 masked word by incorporating fresh randomness.
@@ -501,25 +532,6 @@ void ascon_masked_word_x3_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
 
 /**
- * \brief Masks a 64-bit word and loads it into a x3 masked word.
- *
- * \param word The x3 masked word to write to.
- * \param data The 64-bit word to be masked.
- * \param trng TRNG to use to generate masking material.
- */
-void ascon_masked_word_x3_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
-
-/**
- * \brief Unmasks the contents of a x3 masked word.
- *
- * \param word The x3 masked word to unmask.
- *
- * \return The unmasked version of the word.
- */
-uint64_t ascon_masked_word_x3_unmask(const ascon_masked_word_t *word);
-
-/**
  * \brief Randomizes a x3 masked word by incorporating fresh randomness.
  *
  * \param dest Points to the destination for the randomized version.
@@ -651,25 +663,6 @@ void ascon_masked_word_x4_store
  */
 void ascon_masked_word_x4_store_partial
     (uint8_t *data, unsigned size, const ascon_masked_word_t *word);
-
-/**
- * \brief Masks a 64-bit word and loads it into a x4 masked word.
- *
- * \param word The x4 masked word to write to.
- * \param data The 64-bit word to be masked.
- * \param trng TRNG to use to generate masking material.
- */
-void ascon_masked_word_x4_mask
-    (ascon_masked_word_t *word, uint64_t data, ascon_trng_state_t *trng);
-
-/**
- * \brief Unmasks the contents of a x4 masked word.
- *
- * \param word The x4 masked word to unmask.
- *
- * \return The unmasked version of the word.
- */
-uint64_t ascon_masked_word_x4_unmask(const ascon_masked_word_t *word);
 
 /**
  * \brief Randomizes a x4 masked word by incorporating fresh randomness.

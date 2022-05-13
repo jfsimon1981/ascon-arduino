@@ -277,6 +277,10 @@ void setup()
     perfHash("ASCON-HASHA", ascon_hasha);
     perfHash("ASCON-XOF", ascon_xof);
     perfHash("ASCON-XOFA", ascon_xofa);
+
+    perfCipher("ASCON-128-masked", ascon128_masked_aead_encrypt, ascon128_masked_aead_decrypt);
+    perfCipher("ASCON-128a-masked", ascon128a_masked_aead_encrypt, ascon128a_masked_aead_decrypt);
+    perfCipher("ASCON-80pq-masked", ascon80pq_masked_aead_encrypt, ascon80pq_masked_aead_decrypt);
 }
 
 void loop()

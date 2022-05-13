@@ -23,12 +23,20 @@
 #ifndef ASCON_MASKED_BACKEND_H
 #define ASCON_MASKED_BACKEND_H
 
-#include "utility/ascon-select-backend.h"
+#include "ascon-select-backend.h"
+#include "ascon-masked-config.h"
 
 /* Select the default back end to use for the masked ASCON permutation,
  * and any properties we can use to optimize use of the permutation. */
 
-#if defined(ASCON_BACKEND_SLICED32)
+#if defined(ASCON_BACKEND_AVR5)
+
+/* Masked backend for AVR5 based systems */
+#define ASCON_MASKED_X2_BACKEND_AVR5 1
+#define ASCON_MASKED_X3_BACKEND_AVR5 1
+#define ASCON_MASKED_WORD_BACKEND_DIRECT_XOR 1
+
+#elif defined(ASCON_BACKEND_SLICED32)
 
 /* Use the 32-bit sliced backend for masking if we were using the
  * 32-bit sliced backend for the regular permutation as then it is
